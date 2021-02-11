@@ -1,10 +1,10 @@
 #include <BLEDevice.h>
 
-#define ADDRESS "fc:58:fa:0a:26:48" //Endereço do iTag, conseguido pelo próprio scan
+#define ADDRESS "fc:58:fa:0a:26:48" //Endereço do iTag, para descobrir o endereço procure na appstore por Bluetooth Mac Address Finder
 #define RELAY_PIN 2 //Pino do Relê
 #define SCAN_INTERVAL 1000 //intervalo entre cada scan
-#define TARGET_RSSI -65 //RSSI limite para ligar o relê.
-#define MAX_MISSING_TIME 5000 //Tempo para desligar o relê desde o momento que o iTag não for encontrado
+#define TARGET_RSSI -74 //RSSI limite para ligar o relê.
+#define MAX_MISSING_TIME 1000 //Tempo para desligar o relê desde o momento que o iTag não for encontrado
 
 BLEScan* pBLEScan; //Variável que irá guardar o scan
 uint32_t lastScanTime = 0; //Quando ocorreu o último scan
@@ -12,6 +12,7 @@ boolean found = false; //Se encontrou o iTag no último scan
 uint32_t lastFoundTime = 0; //Tempo em que encontrou o iTag pela última vez
 int rssi = 0;
 
+//FUNCIONANDO
 //Callback das chamadas ao scan
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks
 {
@@ -36,7 +37,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks
 void setup()
 {
     Serial.begin(115200);
-    //Configura o pino do relê como saída e coloca com low
+    //Configura o pino do relê como saída e coloca com High
     pinMode(RELAY_PIN, OUTPUT);
     digitalWrite(RELAY_PIN, LOW);
 
@@ -55,7 +56,7 @@ void loop()
         lastFoundTime = millis(); //Tempo em milissegundos de quando encontrou
         found = false;
         
-        if(rssi > TARGET_RSSI){ //Se está fora do limite, ligamos o relê
+        if(rssi > TARGET_RSSI){ //Se está dentro do limite, ligamos o relê
             digitalWrite(RELAY_PIN, HIGH);
         }
         else{ //senão desligamos
